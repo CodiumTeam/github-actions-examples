@@ -1,0 +1,35 @@
+# This example runs a simulated test pipeline.
+# Then deploys to staging. Then, waits for approval to deploy to production.
+#
+# If a new pipeline is created when the previos one is still running the new
+# pipeline will cancel the previous one, it does not allow two deploys to the same
+# environment to run at the same time.
+
+name: Example with manual deploy
+
+on:
+  push: ~
+
+jobs:
+  Run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Running tests"
+
+  Deploy-staging:
+    runs-on: ubuntu-latest
+    environment: staging
+    concurrency:
+      group: staging
+      cancel-in-progress: true
+    steps:
+      - run: echo "Deploying to staging"
+
+  Deploy-production:
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: production
+      cancel-in-progress: true
+    steps:
+      - run: echo "Deploying to production"
