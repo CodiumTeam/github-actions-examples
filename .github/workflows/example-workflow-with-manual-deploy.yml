@@ -22,12 +22,14 @@ jobs:
     concurrency:
       group: staging
       cancel-in-progress: true
+    needs: [Run-tests]
     steps:
       - run: echo "Deploying to staging"
 
   Deploy-production:
     runs-on: ubuntu-latest
     environment: production
+    needs: [Run-tests, Deploy-staging]
     concurrency:
       group: production
       cancel-in-progress: true
